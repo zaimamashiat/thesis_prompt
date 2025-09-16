@@ -1,3 +1,4 @@
+# calculator.py
 class Calculator:
     def add(a, b)  # Syntax error: missing colon
         """Add two numbers."""

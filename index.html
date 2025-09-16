@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Fix Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #chatbox { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
+        #fileInput, #submitBtn { margin: 10px 0; }
+        .download-link { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Code Fix Chatbot</h2>
+    <input type="file" id="fileInput" accept=".py">
+    <button id="submitBtn">Upload and Fix</button>
+    <div id="chatbox"></div>
+
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        const fileInput = document.getElementById('fileInput');
+        const submitBtn = document.getElementById('submitBtn');
+
+        submitBtn.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file || !file.name.endsWith('.py')) {
+                chatbox.innerHTML += '<p>Error: Please select a .py file.</p>';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('http://localhost:8000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    chatbox.innerHTML += `<p>Response: ${JSON.stringify(data, null, 2)}</p>`;
+
+                    // Create a downloadable link instead of automatic download
+                    const fixedCode = data.fixed_code;
+                    const blob = new Blob([fixedCode], { type: 'text/plain' });
+                    const url = window.URL.createObjectURL(blob);
+                    chatbox.innerHTML += `<p class="download-link">Download fixed file: <a href="${url}" target="_blank">fixed_${file.name}</a></p>`;
+                    // Revoke the URL after adding the link to prevent memory leaks (optional, as the link handles it)
+                    setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+                } else {
+                    const error = await response.text();
+                    chatbox.innerHTML += `<p>Error: ${error}</p>`;
+                }
+            } catch (error) {
+                chatbox.innerHTML += `<p>Network error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

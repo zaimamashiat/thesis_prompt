@@ -1,7 +1,14 @@
-"This module provides a simple calculator class with basic arithmetic operations."
+# calculator.py
+
+"""
+A module providing basic calculator functionality.
+"""
 
 class Calculator:
-    """A simple calculator class with basic arithmetic operations."""
+    """
+    A class providing basic arithmetic operations.
+    """
+
     def add(self, a, b):
         """Add two numbers."""
         return a + b
@@ -17,5 +24,5 @@ class Calculator:
         return num1 / num2
 
     def multiply(self, n1, n2):
-        """Multiply two numbers."""
+        """Return the product of n1 and n2."""
         return n1 * n2

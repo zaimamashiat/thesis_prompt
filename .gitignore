@@ -3,3 +3,5 @@ __pycache__/
 .env
 temp_*.py
 test_*.py
+node_modules/
+
